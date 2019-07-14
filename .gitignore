@@ -1,0 +1,17 @@
+target/
+lib_managed/
+src_managed/
+project/boot/
+spark-wa*
+
+.idea
+*.iml
+
+*.swp
+
+.DS_Store
+
+/tmp
+
+/metastore_db/
+derby.log
