@@ -10,7 +10,12 @@ case class SerializableClassificationMeasure(@transient measure: ClassificationM
 
 trait SparkOperators {
 
-  def sparkgscv[T <: Object : ClassTag](x: Array[T], y: Array[Int], k: Int, measures: ClassificationMeasure*)(trainers: ((Array[T], Array[Int]) => Classifier[T])*)(implicit spark: SparkSession): Array[Array[Double]] = {
+  def sparkgscv[T <: Object: ClassTag](
+      x: Array[T],
+      y: Array[Int],
+      k: Int,
+      measures: ClassificationMeasure*)(trainers: ((Array[T], Array[Int]) => Classifier[T])*)(
+      implicit spark: SparkSession): Array[Array[Double]] = {
 
     val sc = spark.sparkContext
 
@@ -21,12 +26,14 @@ trait SparkOperators {
 
     val measuresBroadcasted = measures.map(SerializableClassificationMeasure).map(sc.broadcast)
 
-    trainersRDD.map(trainer => {
-      val x = xBroadcasted.value
-      val y = yBroadcasted.value
-      val measures = measuresBroadcasted.map(_.value.measure)
-      cv(x, y, k, measures: _*)(trainer)
-    }).collect()
+    trainersRDD
+      .map(trainer => {
+        val x = xBroadcasted.value
+        val y = yBroadcasted.value
+        val measures = measuresBroadcasted.map(_.value.measure)
+        cv(x, y, k, measures: _*)(trainer)
+      })
+      .collect()
 
   }
 

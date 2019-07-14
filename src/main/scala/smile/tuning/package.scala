@@ -1,5 +1,3 @@
 package smile
 
-package object tuning extends SparkOperators {
-
-}
+package object tuning extends SparkOperators {}

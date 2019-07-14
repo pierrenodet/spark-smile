@@ -1,6 +1,6 @@
 # Spark SMILE
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/pierrenodet/spark-smile/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/pierrenodet/spark-smile.svg?branch=master)](https://travis-ci.org/pierrenodet/spark-smile)
+[![Build Status](https://travis-ci.com/pierrenodet/spark-smile.svg?branch=master)](https://travis-ci.com/pierrenodet/spark-smile)
 [![codecov](https://codecov.io/gh/pierrenodet/spark-smile/branch/master/graph/badge.svg)](https://codecov.io/gh/pierrenodet/spark-smile)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.pierrenodet/spark-smile_2.12.svg?label=maven-central&colorB=blue)](https://search.maven.org/search?q=g:%22com.github.pierrenodet%22%20AND%20a:%22spark-smile_2.12%22)
 
