@@ -19,7 +19,7 @@ class SparkOperatorsSuite extends FunSuite with DatasetSuiteBase {
 
     val res = sparkgscv(x, y, 5, Seq(new Accuracy().asInstanceOf[ClassificationMeasure]): _*) { (x, y) => knn(x, y, 3) }
 
-    assert(res sameElements Array(Array(1)))
+    assert(res(0)(0) == 1)
 
   }
 
