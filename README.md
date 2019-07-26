@@ -47,6 +47,21 @@ val (x, y) = mushrooms.unzipInt
 sparkgscv(x, y, 5, Seq(new Accuracy().asInstanceOf[ClassificationMeasure]): _*) { (x, y) => knn(x, y, 3) }
 ```
 
+**From Spark Dataset to SMILE SparseDataset**
+
+```scala
+import org.apache.spark.smile.implicits._
+
+val spark = SparkSession.builder().master("local[*]").getOrCreate()
+
+val mushrooms = spark.read.format("libsvm").load("data/mushrooms.svm")
+
+val (x,y) = mushrooms.toSmileDataset("features","label").unzipInt
+
+val res = cv(x, y, 5, Seq(new Accuracy().asInstanceOf[ClassificationMeasure]): _*) { (x, y) => knn(x, y, 3) }
+```
+ 
+
 ## Contributing
 
 Feel free to open an issue or make a pull request to contribute to the repository.

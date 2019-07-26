@@ -8,7 +8,7 @@ import scala.reflect.ClassTag
 
 case class SerializableClassificationMeasure(@transient measure: ClassificationMeasure)
 
-trait SparkOperators {
+trait Operators {
 
   def sparkgscv[T <: Object: ClassTag](
       x: Array[T],
