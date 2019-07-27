@@ -10,9 +10,9 @@ package object implicits {
   implicit class BetterSmileDataset(dataset: SparkDataset[_]) {
 
     def toSmileDataset(
-                        featuresColName: String = "features",
-                        labelColName: String = "label",
-                        weightColName: String = "weight"): SparseDataset = {
+        featuresColName: String = "features",
+        labelColName: String = "label",
+        weightColName: String = "weight"): SparseDataset = {
       val classification =
         dataset.select(labelColName).take(20).forall { case Row(x: Double) => (x % 1) == 0 }
       val minClass =
