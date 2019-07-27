@@ -31,8 +31,9 @@ libraryDependencies += "com.github.pierrenodet" %% "spark-smile" % "0.0.1"
 
 This repository contains :
 
-*  Distributed GridSearch of SMILE trainer with Spark
+*  Distributed GridSearch of SMILE trainer with Spark (WIP)
 *  Integration of SMILE with Spark MLLib Pipelines (WIP)
+*  Seamless interoperability between SMILE and Spark (WIP)
  
 ## How to use
 
