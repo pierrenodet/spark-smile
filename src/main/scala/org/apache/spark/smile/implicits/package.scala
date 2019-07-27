@@ -33,8 +33,7 @@ package object implicits {
               features.toArray.toList.zipWithIndex.foreach {
                 case (x: Double, j: Int) => res.set(i, j, x)
               }
-              if (classification) res.set(i, label.toInt - minClass, weight)
-              else res.set(i, label, weight)
+              res.set(i, label - minClass.toDouble, weight)
           }
       } else {
         dataset
@@ -46,7 +45,7 @@ package object implicits {
               features.toArray.zipWithIndex.foreach {
                 case (x: Double, j: Int) => res.set(i, j, x)
               }
-              if (classification) res.set(i, label.toInt - minClass) else res.set(i, label)
+              res.set(i, label.toInt - minClass)
           }
       }
       res
