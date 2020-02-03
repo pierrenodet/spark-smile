@@ -36,6 +36,7 @@ lazy val core = project
       "-Xmx2048M",
       "-XX:MaxPermSize=2048M",
       "-XX:+CMSClassUnloadingEnabled"),
+    javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     fork.in(Test, run) := true,
     parallelExecution.in(Test) := false,
     libraryDependencies ++= Seq(
