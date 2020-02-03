@@ -23,7 +23,8 @@ inThisBuild(
         url("https://github.com/pierrenodet"))
     ),
     scalaVersion := Scala212Version,
-    crossScalaVersions := List(Scala212Version, Scala211Version)
+    crossScalaVersions := List(Scala212Version, Scala211Version),
+    scalacOptions += ("-target:jvm-1.8")
   )
 )
 
@@ -36,7 +37,7 @@ lazy val core = project
       "-Xmx2048M",
       "-XX:MaxPermSize=2048M",
       "-XX:+CMSClassUnloadingEnabled"),
-    javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
+    javacOptions ++= Seq(""),
     fork.in(Test, run) := true,
     parallelExecution.in(Test) := false,
     libraryDependencies ++= Seq(
