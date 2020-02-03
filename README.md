@@ -14,7 +14,7 @@ Download the dependency from Maven Central
 **SBT**
 
 ```scala
-libraryDependencies += "com.github.pierrenodet" %% "spark-smile" % "0.0.1"
+libraryDependencies += "com.github.pierrenodet" %% "spark-smile" % "0.0.2"
 ```
 
 **Maven**
@@ -23,7 +23,7 @@ libraryDependencies += "com.github.pierrenodet" %% "spark-smile" % "0.0.1"
 <dependency>
   <groupId>com.github.pierrenodet</groupId>
   <artifactId>spark-smile_2.12</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ```
 
@@ -34,34 +34,69 @@ This repository contains :
 *  Distributed GridSearch of SMILE trainer with Spark (WIP)
 *  Integration of SMILE with Spark MLLib Pipelines (WIP)
 *  Seamless interoperability between SMILE and Spark (WIP)
- 
+
 ## How to use
 
 **Distributed GridSearch**
 
 ```scala
-implicit val spark = SparkSession.builder().master("local[*]").getOrCreate()
+val spark = SparkSession.builder().master("local[*]").getOrCreate()
 
-val mushrooms = read.libsvm("data/mushrooms.svm")
-val (x, y) = mushrooms.unzipInt
+val mushrooms = read.arff("data/mushrooms.arff")
 
-sparkgscv(x, y, 5, Seq(new Accuracy().asInstanceOf[ClassificationMeasure]): _*) { (x, y) => knn(x, y, 3) }
+val x = mushrooms.select(1,22).toArray
+val y = mushrooms("class").toIntArray
+
+sparkgscv(spark)(5, x, y, Seq(new Accuracy()): _*) { (x, y) => knn(x, y, 3) }
 ```
 
-**From Spark Dataset to SMILE SparseDataset**
+**From Spark DataFrame to SMILE DataFrame**
+
+```scala
+import org.apache.spark.smile.implicits._
+
+val mushrooms = spark.read.format("libsvm").load("data/mushrooms.svm")
+
+val x = mushrooms.toSmileDF().select("features").map(t=>t.getArray[AnyRef](0).map(_.asInstanceOf[Double])).toArray
+val y = mushrooms.toSmileDF().apply("label").toDoubleArray.map(_.toInt-1)
+
+val res = classification(5, x, y, Seq(new Accuracy()): _*) { (x, y) => knn(x, y, 3) }
+
+println(res(0))
+```
+
+**From SMILE DataFrame to Spark DataFrame**
 
 ```scala
 import org.apache.spark.smile.implicits._
 
 val spark = SparkSession.builder().master("local[*]").getOrCreate()
 
-val mushrooms = spark.read.format("libsvm").load("data/mushrooms.svm")
+val mushrooms = read.arff("data/mushrooms.arff").omitNullRows().toSparkDF(spark)
 
-val (x,y) = mushrooms.toSmileDataset("features","label").unzipInt
-
-val res = cv(x, y, 5, Seq(new Accuracy().asInstanceOf[ClassificationMeasure]): _*) { (x, y) => knn(x, y, 3) }
+mushrooms.show()
 ```
- 
+
+**Use SMILE Classifier (or Regressor) in Spark MLLib Pipeline**
+
+```scala
+val raw = spark.read.format("libsvm").load("data/mushrooms.svm")
+
+val scl = new SmileClassifier()
+  .setTrainer({ (x, y) => knn(x, y, 3) })
+
+val bce = new BinaryClassificationEvaluator()
+  .setLabelCol("label")
+  .setRawPredictionCol("rawPrediction")
+
+val model = scl.fit(data)
+
+println(bce.evaluate(model.transform(data)))
+
+model.write.overwrite().save("/tmp/bonjour")
+val loaded = SmileClassificationModel.load("/tmp/bonjour")
+println(bce.evaluate(loaded.transform(data)))
+```
 
 ## Contributing
 

@@ -2,7 +2,8 @@ package smile.tuning
 
 import org.apache.spark.sql.SparkSession
 import smile.classification.Classifier
-import smile.validation.{ClassificationMeasure, cv}
+import smile.validation.ClassificationMeasure
+import smile.validation.cv._
 
 import scala.reflect.ClassTag
 
@@ -11,11 +12,8 @@ case class SerializableClassificationMeasure(@transient measure: ClassificationM
 trait Operators {
 
   def sparkgscv[T <: Object: ClassTag](
-      x: Array[T],
-      y: Array[Int],
-      k: Int,
-      measures: ClassificationMeasure*)(trainers: ((Array[T], Array[Int]) => Classifier[T])*)(
-      implicit spark: SparkSession): Array[Array[Double]] = {
+      spark: SparkSession)(k: Int, x: Array[T], y: Array[Int], measures: ClassificationMeasure*)(
+      trainers: ((Array[T], Array[Int]) => Classifier[T])*): Array[Array[Double]] = {
 
     val sc = spark.sparkContext
 
@@ -26,14 +24,19 @@ trait Operators {
 
     val measuresBroadcasted = measures.map(SerializableClassificationMeasure).map(sc.broadcast)
 
-    trainersRDD
+    val res = trainersRDD
       .map(trainer => {
         val x = xBroadcasted.value
         val y = yBroadcasted.value
         val measures = measuresBroadcasted.map(_.value.measure)
-        cv(x, y, k, measures: _*)(trainer)
+        classification(k, x, y, measures: _*)(trainer)
       })
       .collect()
+
+    xBroadcasted.destroy()
+    yBroadcasted.destroy()
+
+    res
 
   }
 

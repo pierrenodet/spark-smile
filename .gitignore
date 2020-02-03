@@ -15,3 +15,5 @@ spark-wa*
 
 /metastore_db/
 derby.log
+
+.metals
