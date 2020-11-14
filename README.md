@@ -4,8 +4,9 @@
 [![codecov](https://codecov.io/gh/pierrenodet/spark-smile/branch/master/graph/badge.svg)](https://codecov.io/gh/pierrenodet/spark-smile)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.pierrenodet/spark-smile_2.12.svg?label=maven-central&colorB=blue)](https://search.maven.org/search?q=g:%22com.github.pierrenodet%22%20AND%20a:%22spark-smile_2.12%22)
 
-Repository for better integration of Spark MLLib Pipelines and SMILE
-library
+Deprecated repository, all features have been upstreamed to the official [SMILE repository](https://github.com/haifengl/smile).
+
+Repository for better integration of Spark MLLib Pipelines and SMILE library.
 
 ## Setup
 
